@@ -1,4 +1,4 @@
-package server
+package endpoint
 
 import (
 	"context"
@@ -95,7 +95,7 @@ func (s service) GetOne(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req := models.Request{
-		Id: id,
+		PortID: id,
 	}
 	port, err := s.grpcClient.GetOne(ctx, &req)
 	if err != nil {
