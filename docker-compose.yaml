@@ -1,0 +1,65 @@
+# This docker-compose.yaml is for demonstration purposes.
+# To launch use command docker-compose build && docker-compose up
+version: "3"
+services:
+  postgres:
+    build:
+      context: ./deploy/postgres
+      dockerfile: Dockerfile
+    image: vyeve/postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_DB=doe"
+      - "POSTGRES_USER=pilot"
+    networks:
+      - service-network
+  service:
+    build: .
+    image: vyeve/doe
+  endpoint-ms:
+    build:
+      context: ./deploy/endpoint
+      dockerfile: Dockerfile
+    image: vyeve/endpoint-ms
+    depends_on:
+      - client-ms
+    ports:
+      - "9099:9099"
+    environment:
+      - "SERVER_URL=:9099"
+      - "COMMUNICATION_URL=client-ms:9098"
+      - "LOG_LEVEL=info"
+    networks:
+      - service-network
+    deploy:
+      resources:
+        limits:
+          cpus: 0.1
+          memory: 50M
+  client-ms:
+    build:
+      context: ./deploy/client
+      dockerfile: Dockerfile
+    image: vyeve/client-ms
+    environment:
+      - POSTGRES_USER=pilot
+      - POSTGRES_DB=doe
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=postgres
+      - SERVER_URL=:9098
+      - LOG_LEVEL=info
+    depends_on:
+      - postgres
+      - service
+    ports:
+      - "9098:9098"
+    networks:
+      - service-network
+    deploy:
+      resources:
+        limits:
+          cpus: 0.1
+          memory: 50M
+networks:
+  service-network:
