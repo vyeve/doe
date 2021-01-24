@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package models;
+
+option go_package = "github.com/vyeve/doe/models";
+
+// PortService describes server for Ports' management
+service PortService {
+    rpc Set (stream Port) returns (Empty);
+    rpc GetAll (Request) returns (Ports);
+    rpc GetOne (Request) returns (Port);
+}
+
+// Port is a container that describes Port model
+message Port {
+    string           portID      = 1;
+    string           name        = 2;
+    string           city        = 3;
+    string           country     = 4;
+    repeated string  alias       = 5;
+    repeated string  regions     = 6;
+    repeated double  coordinates = 7;
+    string           province    = 8;
+    string           timezone    = 9;
+    repeated string  unlocs      = 10;
+    string           code        = 11;
+}
+
+// PortAlias is a wrapper for portID to its aliases
+message PortAlias {
+    string  portID  = 1;
+    string  alias   = 2;
+}
+
+message Empty {
+}
+
+// Request is a wrapper for portID and limit
+message Request {
+    string  portID  = 1;
+    int32   limit   = 2;
+}
+
+message Ports {
+    repeated Port ports = 1;
+}
