@@ -172,6 +172,7 @@ func (s service) parseJSON(reader io.Reader, stream models.PortService_SetClient
 		m.PortID = id
 		if err = stream.Send(&m); err != nil {
 			s.log.Warnf("failed to send message to domain service. err=%s", err)
+			return err
 		}
 	}
 	// read closing bracket
