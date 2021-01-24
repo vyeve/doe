@@ -153,6 +153,9 @@ func (r *repoImpl) GetAll(ctx context.Context, limit int32) (_ []*models.Port, e
 				return nil, err
 			}
 			for _, a := range aliases {
+				if !a.Valid {
+					continue
+				}
 				p.Alias = append(p.Alias, a.String)
 			}
 			result = append(result, &p)
@@ -185,6 +188,9 @@ func (r *repoImpl) GetByID(ctx context.Context, portID string) (_ *models.Port, 
 		return nil, err
 	}
 	for _, a := range aliases {
+		if !a.Valid {
+			continue
+		}
 		p.Alias = append(p.Alias, a.String)
 	}
 	return &p, nil

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"os"
 	"reflect"
@@ -45,10 +44,6 @@ func NewService(params ServerParams) (ServiceInterface, error) {
 		log:        params.Logger,
 	}
 	return srv, nil
-}
-
-var formFileFunc = func(r *http.Request, key string) (multipart.File, *multipart.FileHeader, error) {
-	return r.FormFile(key)
 }
 
 // UploadData redirect upload file to gRPC server
@@ -110,7 +105,7 @@ func (s service) GetOne(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	_, _ = fmt.Fprintln(w, fmt.Sprintf("{%q: %s}", id, p))
+	fmt.Fprintf(w, "{%q: %s}\n", id, p) // nolint: errcheck
 }
 
 // GetAll redirects all found ports from gRPC server to response
@@ -127,7 +122,7 @@ func (s service) GetAll(w http.ResponseWriter, r *http.Request) {
 		s.log.Warnf("Failed to marshal port: %v", err)
 
 	}
-	w.Write(p)
+	w.Write(p) // nolint: errcheck
 }
 
 func (s service) readFile(ctx context.Context, reader io.Reader) error {
