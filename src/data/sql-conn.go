@@ -26,7 +26,7 @@ type (
 	SQLDb interface {
 		SQLTx
 		Close() error
-		DBConn() *sql.DB
+		ExecuteTx(ctx context.Context, fn func(tx SQLTx) error) error
 	}
 )
 
@@ -45,12 +45,8 @@ func NewSQLTx() (SQLDb, error) {
 	return &sqlImpl{conn}, nil
 }
 
-func (s *sqlImpl) DBConn() *sql.DB {
-	return s.DB
-}
-
-func ExecuteTx(ctx context.Context, db *sql.DB, fn func(tx SQLTx) error) (err error) {
-	tx, err := db.BeginTx(ctx, nil)
+func (s *sqlImpl) ExecuteTx(ctx context.Context, fn func(tx SQLTx) error) (err error) {
+	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}

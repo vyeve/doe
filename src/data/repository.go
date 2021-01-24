@@ -52,7 +52,7 @@ func (r *repoImpl) Insert(ctx context.Context, ports []*models.Port) (err error)
 	if len(ports) == 0 {
 		return nil
 	}
-	return ExecuteTx(ctx, r.tx.DBConn(), func(tx SQLTx) error {
+	return r.tx.ExecuteTx(ctx, func(tx SQLTx) error {
 		ph := strings.Builder{}
 		phCleanup := strings.Builder{}
 		phAlias := strings.Builder{}
@@ -123,43 +123,41 @@ func (r *repoImpl) Insert(ctx context.Context, ports []*models.Port) (err error)
 func (r *repoImpl) GetAll(ctx context.Context, limit int32) (_ []*models.Port, err error) {
 	defer r.guardPanic(&err)
 	result := make([]*models.Port, 0, limit)
-	var count int32
-	for count != limit {
-		rows, err := r.tx.QueryContext(ctx, listAllStmt, limit)
-		if err != nil {
-			r.log.Warnf("Failed to extract ports. err: %v", err)
+	rows, err := r.tx.QueryContext(ctx, listAllStmt, limit)
+	if err != nil {
+		r.log.Warnf("Failed to extract ports. err: %v", err)
+		return nil, err
+	}
+	for rows.Next() {
+		var (
+			p       models.Port
+			aliases []sql.NullString
+		)
+
+		if err = rows.Scan(
+			&p.PortID,
+			&p.Name,
+			&p.City,
+			&p.Province,
+			&p.Country,
+			pq.Array(&p.Regions),
+			pq.Array(&p.Coordinates),
+			&p.Timezone,
+			pq.Array(&p.Unlocs),
+			&p.Code,
+			pq.Array(&aliases),
+		); err != nil {
+			r.log.Warnf("Failed to scan data. err: %v", err)
 			return nil, err
 		}
-		for ; rows.Next(); count++ {
-			var (
-				p       models.Port
-				aliases []sql.NullString
-			)
-
-			if err = rows.Scan(
-				&p.PortID,
-				&p.Name,
-				&p.City,
-				&p.Province,
-				&p.Country,
-				pq.Array(&p.Regions),
-				pq.Array(&p.Coordinates),
-				&p.Timezone,
-				pq.Array(&p.Unlocs),
-				&p.Code,
-				pq.Array(&aliases),
-			); err != nil {
-				r.log.Warnf("Failed to scan data. err: %v", err)
-				return nil, err
+		for _, a := range aliases {
+			if !a.Valid {
+				continue
 			}
-			for _, a := range aliases {
-				if !a.Valid {
-					continue
-				}
-				p.Alias = append(p.Alias, a.String)
-			}
-			result = append(result, &p)
+			p.Alias = append(p.Alias, a.String)
 		}
+		result = append(result, &p)
+
 	}
 	return result, nil
 }
