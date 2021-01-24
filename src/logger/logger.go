@@ -23,14 +23,13 @@ type Logger interface {
 	Errorf(format string, args ...interface{})
 	Fatal(args ...interface{})
 	Fatalf(format string, args ...interface{})
-	aws.Logger
 }
 
 type logger struct {
 	*logrus.Logger
 }
 
-func NewEnv() Logger {
+func New() Logger {
 	customFormatter := new(logrus.TextFormatter)
 	customFormatter.TimestampFormat = logTimeFormat
 	customFormatter.FullTimestamp = true
