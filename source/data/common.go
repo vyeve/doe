@@ -1,7 +1,7 @@
 package data
 
 import (
-	"doe/src/logger"
+	"doe/source/logger"
 
 	"go.uber.org/fx"
 )

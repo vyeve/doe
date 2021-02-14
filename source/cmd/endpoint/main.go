@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 
-	"doe/src/endpoint"
-	"doe/src/logger"
+	"doe/source/endpoint"
+	"doe/source/logger"
 
 	"go.uber.org/fx"
 )

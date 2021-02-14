@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"doe/src/logger"
-	"doe/src/models"
+	"doe/source/logger"
+	"doe/source/models"
 
 	"github.com/lib/pq"
 	"go.uber.org/fx"

@@ -7,10 +7,10 @@ ENV TARGET_NAME_SERVER endpoint-ms
 ENV TARGET_PATH_SERVER ${TARGET_PATH}/${TARGET_NAME_SERVER}
 ENV SOURCE_PATH /app/
 
-ENV PACKAGES   ./src/data \
-               ./src/endpoint 
+ENV PACKAGES   ./source/data \
+               ./source/endpoint 
 
-COPY ./src ${SOURCE_PATH}/src
+COPY ./source ${SOURCE_PATH}/source
 COPY go.mod ${SOURCE_PATH}
 COPY go.sum ${SOURCE_PATH}
 
@@ -19,8 +19,8 @@ WORKDIR $SOURCE_PATH
 RUN go mod download
 RUN for package in $PACKAGES; do go test -cover -covermode=count $PACKAGES; done
 
-WORKDIR $SOURCE_PATH/src/cmd/client
+WORKDIR $SOURCE_PATH/source/cmd/client
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-w' -o ${TARGET_PATH_CLIENT}
 
-WORKDIR $SOURCE_PATH/src/cmd/endpoint
+WORKDIR $SOURCE_PATH/source/cmd/endpoint
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-w' -o ${TARGET_PATH_SERVER}

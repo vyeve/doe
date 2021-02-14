@@ -1,8 +1,8 @@
 package domainserver
 
 import (
-	"doe/src/data"
-	"doe/src/logger"
+	"doe/source/data"
+	"doe/source/logger"
 
 	"go.uber.org/fx"
 )

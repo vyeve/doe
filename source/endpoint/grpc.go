@@ -11,8 +11,8 @@ import (
 	"reflect"
 	"strconv"
 
-	"doe/src/logger"
-	"doe/src/models"
+	"doe/source/logger"
+	"doe/source/models"
 
 	"github.com/gorilla/mux"
 	gRPC "google.golang.org/grpc"

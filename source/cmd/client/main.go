@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 
-	server "doe/src/client"
-	"doe/src/data"
-	"doe/src/logger"
+	server "doe/source/client"
+	"doe/source/data"
+	"doe/source/logger"
 
 	"go.uber.org/fx"
 )

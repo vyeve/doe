@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"doe/src/mocks"
-	"doe/src/models"
+	"doe/source/mocks"
+	"doe/source/models"
 
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"

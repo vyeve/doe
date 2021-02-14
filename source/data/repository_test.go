@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"doe/src/mocks"
-	"doe/src/models"
+	"doe/source/mocks"
+	"doe/source/models"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/golang/mock/gomock"

@@ -6,9 +6,9 @@ import (
 	"net"
 	"os"
 
-	"doe/src/data"
-	"doe/src/logger"
-	"doe/src/models"
+	"doe/source/data"
+	"doe/source/logger"
+	"doe/source/models"
 
 	gRPC "google.golang.org/grpc"
 )
